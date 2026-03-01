@@ -15,6 +15,10 @@ class RuntimeSmokeTests(unittest.TestCase):
         content = Path("README.md").read_text(encoding="utf-8")
         self.assertIn("NameError: name 'ccxt' is not defined", content)
 
+    def test_readme_has_troubleshooting_for_credentials_nameerror(self) -> None:
+        content = Path("README.md").read_text(encoding="utf-8")
+        self.assertIn("NameError: name 'credentials' is not defined", content)
+
 
 if __name__ == "__main__":
     unittest.main()

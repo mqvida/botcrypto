@@ -129,5 +129,10 @@ Este projeto é educacional e uma base profissional para evolução. Trading de 
   - reinstale dependências: `pip install -r requirements.txt`,
   - execute novamente: `python -m bot.main`.
 
+- **`NameError: name 'credentials' is not defined` em `bot/exchange/okx.py`**:
+  - esse erro ocorre quando existe código de configuração no escopo global do arquivo (fora da classe),
+  - atualize para a versão mais recente do repositório (onde a configuração usa `creds` apenas dentro do `__init__`),
+  - execute: `git pull` e depois `python -m bot.main`.
+
 - **`ModuleNotFoundError` para `pandas`, `ta` etc.**:
   - instale as dependências no mesmo ambiente Python usado para rodar o bot.

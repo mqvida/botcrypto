@@ -1,7 +1,8 @@
 """Regression tests for exchange adapter module structure.
 
 These tests prevent accidental module-level execution bugs such as
-`NameError: name 'ccxt' is not defined` caused by malformed files.
+`NameError: name 'ccxt' is not defined` or `NameError: name 'credentials' is not defined`
+caused by malformed files.
 """
 
 from __future__ import annotations
@@ -30,15 +31,23 @@ class ExchangeModuleStructureTests(unittest.TestCase):
                     if isinstance(target, ast.Attribute) and isinstance(target.value, ast.Name) and target.value.id == "self":
                         self.fail("module-level assignment to self.<attr> found")
 
+    def _assert_no_module_level_credentials_usage(self, tree: ast.Module) -> None:
+        for node in tree.body:
+            for subnode in ast.walk(node):
+                if isinstance(subnode, ast.Name) and subnode.id == "credentials":
+                    self.fail("module-level reference to 'credentials' found")
+
     def test_okx_adapter_structure(self) -> None:
         tree = self._load_tree("bot/exchange/okx.py")
         self._assert_has_ccxt_import(tree)
         self._assert_no_module_level_self_assignment(tree)
+        self._assert_no_module_level_credentials_usage(tree)
 
     def test_mexc_adapter_structure(self) -> None:
         tree = self._load_tree("bot/exchange/mexc.py")
         self._assert_has_ccxt_import(tree)
         self._assert_no_module_level_self_assignment(tree)
+        self._assert_no_module_level_credentials_usage(tree)
 
 
 if __name__ == "__main__":
